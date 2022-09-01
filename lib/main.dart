@@ -41,6 +41,7 @@ class _ToDoListState extends State<ToDoList> {
                 child: const Text('OK'),
                 onPressed: () {
                   setState(() {
+                    _handleNewItem(_inputController.text);
                     Navigator.pop(context);
                   });
                 },
@@ -56,7 +57,7 @@ class _ToDoListState extends State<ToDoList> {
                     onPressed: value.text.isNotEmpty
                         ? () {
                             setState(() {
-                              _handleNewItem(valueText);
+                              // _handleNewItem(valueText);
                               Navigator.pop(context);
                             });
                           }
@@ -84,15 +85,12 @@ class _ToDoListState extends State<ToDoList> {
       // The framework then calls build, below,
       // which updates the visual appearance of the app.
 
-      items.remove(item);
       if (!completed) {
         print("Completing");
         _itemSet.add(item);
-        items.add(item);
       } else {
         print("Making Undone");
         _itemSet.remove(item);
-        items.insert(0, item);
       }
     });
   }
@@ -107,7 +105,7 @@ class _ToDoListState extends State<ToDoList> {
   void _handleNewItem(String itemText) {
     setState(() {
       print("Adding new item");
-      Item item = const Item(name: "itemText");
+      Item item = Item(name: itemText);
       items.insert(0, item);
       _inputController.clear();
     });
