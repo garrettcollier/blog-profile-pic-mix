@@ -1,4 +1,5 @@
 // Started with https://docs.flutter.dev/development/ui/widgets-intro
+// ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:to_dont_list/to_do_items.dart';
 
@@ -118,6 +119,33 @@ class _ToDoListState extends State<ToDoList> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('To Do List'),
+        ),
+        // drawer code from https://rushabhshah065.medium.com/flutter-navigation-drawer-tab-layout-e74074c249ce
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(color: Colors.green),
+                child: Text(
+                  "Testing",
+                  textAlign: TextAlign.justify,
+                  textScaleFactor: 2.0,
+                ),
+              ),
+              ListTile(
+                title: Text("First"),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text("Second"),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          ),
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
