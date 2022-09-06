@@ -10,8 +10,12 @@ class ToDoList extends StatefulWidget {
 }
 
 class _ToDoListState extends State<ToDoList> {
-  // Dialog with text from https://www.appsdeveloperblog.com/alert-dialog-with-a-text-field-in-flutter/
-  final TextEditingController _inputController = TextEditingController();
+  // Dialog with text fields from https://www.appsdeveloperblog.com/alert-dialog-with-a-text-field-in-flutter/
+  final TextEditingController _inputControllerTitle = TextEditingController();
+  final TextEditingController _inputControllerDesc = TextEditingController();
+  final TextEditingController _inputControllerLink = TextEditingController();
+
+  // OK and CANCEL Buttons
   final ButtonStyle yesStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20), primary: Colors.green);
   final ButtonStyle noStyle = ElevatedButton.styleFrom(
@@ -20,45 +24,81 @@ class _ToDoListState extends State<ToDoList> {
   Future<void> _displayTextInputDialog(BuildContext context) async {
     print("Loading Dialog");
     return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('New Post'),
-            content: TextField(
-              onChanged: (value) {
-                setState(() {
-                  valueText = value;
-                });
-              },
-              controller: _inputController,
-              decoration: const InputDecoration(hintText: "Post Title"),
-            ),
-            actions: <Widget>[
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('New Post'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            // position
+            mainAxisSize: MainAxisSize.min,
+            // wrap content in flutter
+            // Post Title
+            children: <Widget>[
+              TextField(
+                onChanged: (valueTitle) {
+                  setState(
+                    () {
+                      valueText = valueTitle;
+                    },
+                  );
+                },
+                controller: _inputControllerTitle,
+                decoration: const InputDecoration(hintText: "Title"),
+              ),
+              // Post Description
+              TextField(
+                onChanged: (valueDesc) {
+                  setState(
+                    () {
+                      valueText = valueDesc;
+                    },
+                  );
+                },
+                controller: _inputControllerDesc,
+                decoration: const InputDecoration(hintText: "Description"),
+              ),
+              // Post Links or Images
+              TextField(
+                onChanged: (value) {
+                  setState(
+                    () {
+                      valueText = value;
+                    },
+                  );
+                },
+                controller: _inputControllerLink,
+                decoration: const InputDecoration(hintText: "Images/Links"),
+              ),
               ElevatedButton(
                 key: const Key("OKButton"),
                 style: yesStyle,
                 child: const Text('OK'),
                 onPressed: () {
-                  setState(() {
-                    _handleNewItem(_inputController.text);
-                    Navigator.pop(context);
-                  });
+                  setState(
+                    () {
+                      _handleNewItem(_inputControllerTitle.text);
+                      Navigator.pop(context);
+                    },
+                  );
                 },
               ),
 
               // https://stackoverflow.com/questions/52468987/how-to-turn-disabled-button-into-enabled-button-depending-on-conditions
               ValueListenableBuilder<TextEditingValue>(
-                valueListenable: _inputController,
+                valueListenable: _inputControllerTitle,
                 builder: (context, value, child) {
                   return ElevatedButton(
                     key: const Key("CancelButton"),
                     style: noStyle,
                     onPressed: value.text.isNotEmpty
                         ? () {
-                            setState(() {
-                              // _handleNewItem(valueText);
-                              Navigator.pop(context);
-                            });
+                            setState(
+                              () {
+                                // _handleNewItem(valueText);
+                                Navigator.pop(context);
+                              },
+                            );
                           }
                         : null,
                     child: const Text('Cancel'),
@@ -66,8 +106,10 @@ class _ToDoListState extends State<ToDoList> {
                 },
               ),
             ],
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   String valueText = "";
@@ -107,7 +149,9 @@ class _ToDoListState extends State<ToDoList> {
       print("Adding new post");
       Item item = Item(name: itemText);
       items.insert(0, item);
-      _inputController.clear();
+      _inputControllerTitle.clear();
+      _inputControllerDesc.clear();
+      _inputControllerLink.clear();
     });
   }
 
@@ -140,7 +184,7 @@ class _ToDoListState extends State<ToDoList> {
                   label: const Text("Delete Post"),
                   style: ElevatedButton.styleFrom(primary: Colors.red),
                   onPressed: () {
-                    _displayTextInputDialog(context);
+                    _handleDeleteItem;
                   },
                 ),
               ),
