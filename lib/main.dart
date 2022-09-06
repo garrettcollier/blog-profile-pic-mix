@@ -23,7 +23,7 @@ class _ToDoListState extends State<ToDoList> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Item To Add'),
+            title: const Text('New Post'),
             content: TextField(
               onChanged: (value) {
                 setState(() {
@@ -31,8 +31,7 @@ class _ToDoListState extends State<ToDoList> {
                 });
               },
               controller: _inputController,
-              decoration:
-                  const InputDecoration(hintText: "type something here"),
+              decoration: const InputDecoration(hintText: "Post Title"),
             ),
             actions: <Widget>[
               ElevatedButton(
@@ -73,7 +72,7 @@ class _ToDoListState extends State<ToDoList> {
 
   String valueText = "";
 
-  final List<Item> items = [const Item(name: "add more todos")];
+  final List<Item> items = [const Item(name: "Create A New Blog")];
 
   final _itemSet = <Item>{};
 
@@ -97,14 +96,15 @@ class _ToDoListState extends State<ToDoList> {
 
   void _handleDeleteItem(Item item) {
     setState(() {
-      print("Deleting item");
+      print("Deleting post");
       items.remove(item);
+      _itemSet.remove(item);
     });
   }
 
   void _handleNewItem(String itemText) {
     setState(() {
-      print("Adding new item");
+      print("Adding new post");
       Item item = Item(name: itemText);
       items.insert(0, item);
       _inputController.clear();
@@ -115,7 +115,7 @@ class _ToDoListState extends State<ToDoList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('To Do List'),
+        title: const Text('Blog'),
       ),
       body: Stack(
         children: [
@@ -131,19 +131,25 @@ class _ToDoListState extends State<ToDoList> {
             }).toList(),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Align(
-                child: FloatingActionButton(
-                  child: const Icon(Icons.add),
+                alignment: Alignment.bottomLeft,
+                child: ElevatedButton.icon(
+                  icon: const Text('-'),
+                  label: const Text("Delete Post"),
+                  style: ElevatedButton.styleFrom(primary: Colors.red),
                   onPressed: () {
                     _displayTextInputDialog(context);
                   },
                 ),
               ),
               Align(
-                child: FloatingActionButton(
-                  child: const Icon(Icons.add),
+                alignment: Alignment.bottomRight,
+                child: ElevatedButton.icon(
+                  icon: const Text('+'),
+                  label: const Text("New Post"),
+                  style: ElevatedButton.styleFrom(primary: Colors.green),
                   onPressed: () {
                     _displayTextInputDialog(context);
                   },
@@ -159,7 +165,7 @@ class _ToDoListState extends State<ToDoList> {
 
 void main() {
   runApp(const MaterialApp(
-    title: 'To Do List',
+    title: 'Blog',
     home: ToDoList(),
   ));
 }
