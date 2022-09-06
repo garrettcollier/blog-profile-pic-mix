@@ -3,18 +3,22 @@
 import 'package:flutter/material.dart';
 import 'package:to_dont_list/to_do_items.dart';
 
+List<Item> items1 = [];
+List<Item> items2 = [Item(name: "Add homework")];
+
 class ToDoList extends StatefulWidget {
-  const ToDoList({super.key});
+  const ToDoList({key, required this.title}) : super(key: key);
 
   @override
   State createState() => _ToDoListState();
+
+  final String title;
 }
 
 class SecondPage extends StatefulWidget {
   const SecondPage({key, required this.title}) : super(key: key);
   @override
   State createState() => _SecondPageState();
-
   final String title;
 }
 
@@ -135,18 +139,21 @@ class _ToDoListState extends State<ToDoList> {
               DrawerHeader(
                 decoration: BoxDecoration(color: Colors.green),
                 child: Text(
-                  "Testing",
+                  "Categories",
                   textAlign: TextAlign.justify,
                   textScaleFactor: 2.0,
                 ),
               ),
               ListTile(
-                  title: Text("First"),
+                  title: Text("Work"),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const ToDoList(title: 'To Do List');
+                    }));
                   }),
               ListTile(
-                title: Text("Second"),
+                title: Text("School"),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const SecondPage(title: 'SecondPage');
@@ -156,13 +163,13 @@ class _ToDoListState extends State<ToDoList> {
               Spacer(
                 flex: 10,
               ),
-              Align(
-                  alignment: Alignment.bottomRight,
-                  child: FloatingActionButton(
-                      child: const Icon(Icons.add),
-                      onPressed: () {
-                        _displayTextInputDialog(context);
-                      }))
+              // Align(
+              //     alignment: Alignment.bottomRight,
+              //     child: FloatingActionButton(
+              //         child: const Icon(Icons.add),
+              //         onPressed: () {
+              //           _displayTextInputDialog(context);
+              //         }))
             ],
           ),
         ),
@@ -247,7 +254,7 @@ class _SecondPageState extends State<SecondPage> {
 
   String valueText = "";
 
-  final List<Item> items = [const Item(name: "add more todos")];
+  //final List<Item> items = [const Item(name: "Add homework")];
 
   final _itemSet = <Item>{};
 
@@ -259,15 +266,15 @@ class _SecondPageState extends State<SecondPage> {
       // The framework then calls build, below,
       // which updates the visual appearance of the app.
 
-      items.remove(item);
+      items2.remove(item);
       if (!completed) {
         print("Completing");
         _itemSet.add(item);
-        items.add(item);
+        items2.add(item);
       } else {
         print("Making Undone");
         _itemSet.remove(item);
-        items.insert(0, item);
+        items2.insert(0, item);
       }
     });
   }
@@ -275,7 +282,7 @@ class _SecondPageState extends State<SecondPage> {
   void _handleDeleteItem(Item item) {
     setState(() {
       print("Deleting item");
-      items.remove(item);
+      items2.remove(item);
     });
   }
 
@@ -283,7 +290,7 @@ class _SecondPageState extends State<SecondPage> {
     setState(() {
       print("Adding new item");
       Item item = Item(name: itemText);
-      items.insert(0, item);
+      items2.insert(0, item);
       _inputController.clear();
     });
   }
@@ -301,19 +308,21 @@ class _SecondPageState extends State<SecondPage> {
               DrawerHeader(
                 decoration: BoxDecoration(color: Colors.green),
                 child: Text(
-                  "Testing",
+                  "Categories",
                   textAlign: TextAlign.justify,
                   textScaleFactor: 2.0,
                 ),
               ),
               ListTile(
-                title: Text("First"),
+                title: Text("Work"),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const ToDoList(title: 'To Do List');
+                  }));
                 },
               ),
               ListTile(
-                title: Text("Second"),
+                title: Text("School"),
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -321,19 +330,19 @@ class _SecondPageState extends State<SecondPage> {
               Spacer(
                 flex: 10,
               ),
-              Align(
-                  alignment: Alignment.bottomRight,
-                  child: FloatingActionButton(
-                      child: const Icon(Icons.add),
-                      onPressed: () {
-                        _displayTextInputDialog(context);
-                      }))
+              // Align(
+              //     alignment: Alignment.bottomRight,
+              //     child: FloatingActionButton(
+              //         child: const Icon(Icons.add),
+              //         onPressed: () {
+              //           _displayTextInputDialog(context);
+              //         }))
             ],
           ),
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          children: items.map((item) {
+          children: items2.map((item) {
             return ToDoListItem(
               item: item,
               completed: _itemSet.contains(item),
@@ -353,6 +362,8 @@ class _SecondPageState extends State<SecondPage> {
 void main() {
   runApp(const MaterialApp(
     title: 'To Do List',
-    home: ToDoList(),
+    home: ToDoList(
+      title: 'To Do List',
+    ),
   ));
 }
