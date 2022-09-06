@@ -114,25 +114,46 @@ class _ToDoListState extends State<ToDoList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('To Do List'),
-        ),
-        body: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          children: items.map((item) {
-            return ToDoListItem(
-              item: item,
-              completed: _itemSet.contains(item),
-              onListChanged: _handleListChanged,
-              onDeleteItem: _handleDeleteItem,
-            );
-          }).toList(),
-        ),
-        floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () {
-              _displayTextInputDialog(context);
-            }));
+      appBar: AppBar(
+        title: const Text('To Do List'),
+      ),
+      body: Stack(
+        children: [
+          ListView(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            children: items.map((item) {
+              return ToDoListItem(
+                item: item,
+                completed: _itemSet.contains(item),
+                onListChanged: _handleListChanged,
+                onDeleteItem: _handleDeleteItem,
+              );
+            }).toList(),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Align(
+                child: FloatingActionButton(
+                  child: const Icon(Icons.add),
+                  onPressed: () {
+                    _displayTextInputDialog(context);
+                  },
+                ),
+              ),
+              Align(
+                child: FloatingActionButton(
+                  child: const Icon(Icons.add),
+                  onPressed: () {
+                    _displayTextInputDialog(context);
+                  },
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }
 
