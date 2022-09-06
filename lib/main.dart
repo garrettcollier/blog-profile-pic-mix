@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:to_dont_list/to_do_items.dart';
 
-List<Item> items1 = [];
-List<Item> items2 = [Item(name: "Add homework")];
+List<Item> items1 = [Item(name: "Add tasks!")];
+List<Item> items2 = [Item(name: "Add homework!")];
+final _itemSet = <Item>{};
 
 class ToDoList extends StatefulWidget {
   const ToDoList({key, required this.title}) : super(key: key);
@@ -85,9 +86,7 @@ class _ToDoListState extends State<ToDoList> {
 
   String valueText = "";
 
-  final List<Item> items = [const Item(name: "add more todos")];
-
-  final _itemSet = <Item>{};
+  //final List<Item> items = [const Item(name: "add more todos")];
 
   void _handleListChanged(Item item, bool completed) {
     setState(() {
@@ -97,15 +96,15 @@ class _ToDoListState extends State<ToDoList> {
       // The framework then calls build, below,
       // which updates the visual appearance of the app.
 
-      items.remove(item);
+      items1.remove(item);
       if (!completed) {
         print("Completing");
         _itemSet.add(item);
-        items.add(item);
+        items1.add(item);
       } else {
         print("Making Undone");
         _itemSet.remove(item);
-        items.insert(0, item);
+        items1.insert(0, item);
       }
     });
   }
@@ -113,7 +112,7 @@ class _ToDoListState extends State<ToDoList> {
   void _handleDeleteItem(Item item) {
     setState(() {
       print("Deleting item");
-      items.remove(item);
+      items1.remove(item);
     });
   }
 
@@ -121,7 +120,7 @@ class _ToDoListState extends State<ToDoList> {
     setState(() {
       print("Adding new item");
       Item item = Item(name: itemText);
-      items.insert(0, item);
+      items1.insert(0, item);
       _inputController.clear();
     });
   }
@@ -130,7 +129,7 @@ class _ToDoListState extends State<ToDoList> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('To Do List'),
+          title: const Text('Personal List'),
         ),
         // drawer code from https://rushabhshah065.medium.com/flutter-navigation-drawer-tab-layout-e74074c249ce
         drawer: Drawer(
@@ -145,11 +144,11 @@ class _ToDoListState extends State<ToDoList> {
                 ),
               ),
               ListTile(
-                  title: Text("Work"),
+                  title: Text("Personal"),
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                      return const ToDoList(title: 'To Do List');
+                      return const ToDoList(title: 'Personal List');
                     }));
                   }),
               ListTile(
@@ -175,7 +174,7 @@ class _ToDoListState extends State<ToDoList> {
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          children: items.map((item) {
+          children: items1.map((item) {
             return ToDoListItem(
               item: item,
               completed: _itemSet.contains(item),
@@ -314,10 +313,10 @@ class _SecondPageState extends State<SecondPage> {
                 ),
               ),
               ListTile(
-                title: Text("Work"),
+                title: Text("Personal"),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const ToDoList(title: 'To Do List');
+                    return const ToDoList(title: 'Personal List');
                   }));
                 },
               ),
@@ -363,7 +362,7 @@ void main() {
   runApp(const MaterialApp(
     title: 'To Do List',
     home: ToDoList(
-      title: 'To Do List',
+      title: 'Personal List',
     ),
   ));
 }
