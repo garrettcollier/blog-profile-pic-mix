@@ -191,6 +191,7 @@ class _ToDoListState extends State<ToDoList> {
   }
 }
 
+// Going to redo this page to be a list calender that orders the to dos by the dates that I will add in the first page
 class _SecondPageState extends State<SecondPage> {
   // Dialog with text from https://www.appsdeveloperblog.com/alert-dialog-with-a-text-field-in-flutter/
   final TextEditingController _inputController = TextEditingController();
