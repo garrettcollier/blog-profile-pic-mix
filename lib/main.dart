@@ -21,7 +21,8 @@ class _ToDoListState extends State<ToDoList> {
   final ButtonStyle noStyle = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20), primary: Colors.red);
 
-  Future<void> _displayTextInputDialog(BuildContext context) async {
+  // Text input window when creating a new post
+  Future<void> _displayTextInputDialogNewPost(BuildContext context) async {
     print("Loading Dialog");
     return showDialog(
       context: context,
@@ -95,7 +96,6 @@ class _ToDoListState extends State<ToDoList> {
                         ? () {
                             setState(
                               () {
-                                // _handleNewItem(valueText);
                                 Navigator.pop(context);
                               },
                             );
@@ -114,7 +114,8 @@ class _ToDoListState extends State<ToDoList> {
 
   String valueText = "";
 
-  final List<Item> items = [const Item(name: "Create A New Blog")];
+  final List<Item> items = [];
+  var indexOfItem = 0;
 
   final _itemSet = <Item>{};
 
@@ -127,11 +128,25 @@ class _ToDoListState extends State<ToDoList> {
       // which updates the visual appearance of the app.
 
       if (!completed) {
-        print("Completing");
-        _itemSet.add(item);
-      } else {
-        print("Making Undone");
-        _itemSet.remove(item);
+        print("Loading Dialog");
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(item.name.toString()),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                // position
+                mainAxisSize: MainAxisSize.min,
+                // wrap content in flutter
+                // Post Title
+                // children: const <Widget>[
+                //   Text('widgets')
+                // ]
+              ),
+            );
+          },
+        );
       }
     });
   }
@@ -178,16 +193,23 @@ class _ToDoListState extends State<ToDoList> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Align(
-                alignment: Alignment.bottomLeft,
-                child: ElevatedButton.icon(
-                  icon: const Text('-'),
-                  label: const Text("Delete Post"),
-                  style: ElevatedButton.styleFrom(primary: Colors.red),
-                  onPressed: () {
-                    _handleDeleteItem;
-                  },
-                ),
-              ),
+                  alignment: Alignment.bottomLeft,
+                  child: DropdownButton(
+                    value: indexOfItem,
+                    items: <int>[for (var i = 0; i < items.length; i++) i]
+                        .map((int value) {
+                      return DropdownMenuItem<int>(
+                        value: value,
+                        child: Text(value.toString()),
+                      );
+                    }).toList(),
+                    onChanged: (int? value) {
+                      setState(() {
+                        indexOfItem = value!;
+                        _handleDeleteItem(items.elementAt(indexOfItem));
+                      });
+                    },
+                  )),
               Align(
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton.icon(
@@ -195,7 +217,7 @@ class _ToDoListState extends State<ToDoList> {
                   label: const Text("New Post"),
                   style: ElevatedButton.styleFrom(primary: Colors.green),
                   onPressed: () {
-                    _displayTextInputDialog(context);
+                    _displayTextInputDialogNewPost(context);
                   },
                 ),
               ),
