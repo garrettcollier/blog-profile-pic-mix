@@ -96,6 +96,10 @@ class _ToDoListState extends State<ToDoList> {
                         ? () {
                             setState(
                               () {
+<<<<<<< HEAD
+=======
+                                // _handleNewItem(valueText);
+>>>>>>> main
                                 Navigator.pop(context);
                               },
                             );
@@ -193,6 +197,7 @@ class _ToDoListState extends State<ToDoList> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Align(
+<<<<<<< HEAD
                   alignment: Alignment.bottomLeft,
                   child: DropdownButton(
                     value: indexOfItem,
@@ -210,6 +215,18 @@ class _ToDoListState extends State<ToDoList> {
                       });
                     },
                   )),
+=======
+                alignment: Alignment.bottomLeft,
+                child: ElevatedButton.icon(
+                  icon: const Text('-'),
+                  label: const Text("Delete Post"),
+                  style: ElevatedButton.styleFrom(primary: Colors.red),
+                  onPressed: () {
+                    _handleDeleteItem;
+                  },
+                ),
+              ),
+>>>>>>> main
               Align(
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton.icon(
