@@ -114,7 +114,7 @@ class _ToDoListState extends State<ToDoList> {
 
   String valueText = "";
 
-  final List<Item> items = [];
+  final List<Item> items = [const Item(name: 'Add New Blog Posts')];
   var indexOfItem = 0;
 
   final _itemSet = <Item>{};
@@ -138,11 +138,6 @@ class _ToDoListState extends State<ToDoList> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 // position
                 mainAxisSize: MainAxisSize.min,
-                // wrap content in flutter
-                // Post Title
-                // children: const <Widget>[
-                //   Text('widgets')
-                // ]
               ),
             );
           },
@@ -176,55 +171,70 @@ class _ToDoListState extends State<ToDoList> {
       appBar: AppBar(
         title: const Text('Blog'),
       ),
-      body: Stack(
+      body: Center(
+          child: Column(
         children: [
-          ListView(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            children: items.map((item) {
-              return ToDoListItem(
-                item: item,
-                completed: _itemSet.contains(item),
-                onListChanged: _handleListChanged,
-                onDeleteItem: _handleDeleteItem,
-              );
-            }).toList(),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              children: items.map((item) {
+                return ToDoListItem(
+                  item: item,
+                  completed: _itemSet.contains(item),
+                  onListChanged: _handleListChanged,
+                  onDeleteItem: _handleDeleteItem,
+                );
+              }).toList(),
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Align(
-                  alignment: Alignment.bottomLeft,
-                  child: DropdownButton(
-                    value: indexOfItem,
-                    items: <int>[for (var i = 0; i < items.length; i++) i]
-                        .map((int value) {
-                      return DropdownMenuItem<int>(
-                        value: value,
-                        child: Text(value.toString()),
-                      );
-                    }).toList(),
-                    onChanged: (int? value) {
-                      setState(() {
-                        indexOfItem = value!;
-                        _handleDeleteItem(items.elementAt(indexOfItem));
-                      });
-                    },
-                  )),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: ElevatedButton.icon(
-                  icon: const Text('+'),
-                  label: const Text("New Post"),
-                  style: ElevatedButton.styleFrom(primary: Colors.green),
-                  onPressed: () {
-                    _displayTextInputDialogNewPost(context);
-                  },
+          Column(
+            children: [
+              const Text(
+                'Number of current Blog posts',
+                style: TextStyle(
+                  color: Colors.blue,
                 ),
               ),
+              const Text(
+                'Delete Post using index based on list order',
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              DropdownButton(
+                alignment: Alignment.bottomLeft,
+                value: indexOfItem,
+                items: <int>[for (var i = 0; i <= items.length; i++) i]
+                    .map((int value) {
+                  return DropdownMenuItem<int>(
+                    value: value,
+                    child: Text(value.toString()),
+                  );
+                }).toList(),
+                onChanged: (int? value) {
+                  setState(
+                    () {
+                      indexOfItem = value!;
+                      _handleDeleteItem(items.elementAt(indexOfItem));
+                    },
+                  );
+                },
+              ),
             ],
-          )
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: ElevatedButton.icon(
+              icon: const Text('+'),
+              label: const Text("New Post"),
+              style: ElevatedButton.styleFrom(primary: Colors.green),
+              onPressed: () {
+                _displayTextInputDialogNewPost(context);
+              },
+            ),
+          ),
         ],
-      ),
+      )),
     );
   }
 }
