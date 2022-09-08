@@ -1,6 +1,7 @@
 // Started with https://docs.flutter.dev/development/ui/widgets-intro
 import 'package:flutter/material.dart';
 import 'package:to_dont_list/to_do_items.dart';
+import 'package:to_dont_list/image_picker.dart';
 
 class ToDoList extends StatefulWidget {
   const ToDoList({super.key});
@@ -171,6 +172,33 @@ class _ToDoListState extends State<ToDoList> {
       appBar: AppBar(
         title: const Text('Blog'),
       ),
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Blog Posts'),
+            ),
+            ListTile(
+              title: const Text('Upload Pictures'),
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => PageTwo())),
+            ),
+            ListTile(
+              title: const Text('Item 2'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       body: Center(
           child: Column(
         children: [
@@ -235,6 +263,20 @@ class _ToDoListState extends State<ToDoList> {
           ),
         ],
       )),
+    );
+  }
+}
+
+class PageTwo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Upload Images'),
+      ),
+      body: const Center(
+        child: Text('Upload Image button'),
+      ),
     );
   }
 }
