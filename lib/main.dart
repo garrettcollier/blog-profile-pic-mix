@@ -1,7 +1,8 @@
 // Started with https://docs.flutter.dev/development/ui/widgets-intro
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:to_dont_list/to_do_items.dart';
-import 'package:to_dont_list/image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ToDoList extends StatefulWidget {
   const ToDoList({super.key});
@@ -189,7 +190,7 @@ class _ToDoListState extends State<ToDoList> {
                   .push(MaterialPageRoute(builder: (context) => PageTwo())),
             ),
             ListTile(
-              title: const Text('Item 2'),
+              title: const Text('Upload Pictures'),
               onTap: () {
                 // Update the state of the app.
                 // ...
@@ -267,23 +268,132 @@ class _ToDoListState extends State<ToDoList> {
   }
 }
 
-class PageTwo extends StatelessWidget {
+class ImageFromGalleryEx extends StatefulWidget {
+  final type;
+  const ImageFromGalleryEx(this.type);
+
+  @override
+  ImageFromGalleryExState createState() => ImageFromGalleryExState(type);
+}
+
+class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
+  var _image;
+  ImagePicker _picker = ImagePicker();
+  var type;
+
+  ImageFromGalleryExState(this.type);
+
+  @override
+  void initState() {
+    super.initState();
+    _picker = ImagePicker();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Upload Images'),
-      ),
-      body: const Center(
-        child: Text('Upload Image button'),
+          title: Text(type == ImageSourceType.camera
+              ? "Image from Camera"
+              : "Image from Gallery")),
+      body: Column(
+        children: <Widget>[
+          const SizedBox(
+            height: 52,
+          ),
+          Center(
+            child: GestureDetector(
+              onTap: () async {
+                var source = type == ImageSourceType.camera
+                    ? ImageSource.camera
+                    : ImageSource.gallery;
+                XFile? image = await _picker.pickImage(
+                    source: source,
+                    imageQuality: 50,
+                    preferredCameraDevice: CameraDevice.front);
+                setState(() {
+                  _image = File(image!.path);
+                });
+              },
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(color: Colors.red[200]),
+                child: _image != null
+                    ? Image.file(
+                        _image,
+                        width: 200.0,
+                        height: 200.0,
+                        fit: BoxFit.fitHeight,
+                      )
+                    : Container(
+                        decoration: BoxDecoration(color: Colors.red[200]),
+                        width: 200,
+                        height: 200,
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
 }
 
+enum ImageSourceType { gallery, camera }
+
+class PageTwo extends StatelessWidget {
+  void _handleURLButtonPress(BuildContext context, var type) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text("Image Picker Example"),
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              MaterialButton(
+                color: Colors.blue,
+                child: const Text(
+                  "Pick Image from Gallery",
+                  style: TextStyle(
+                      color: Colors.white70, fontWeight: FontWeight.bold),
+                ),
+                onPressed: () {
+                  _handleURLButtonPress(context, ImageSourceType.gallery);
+                },
+              ),
+              MaterialButton(
+                color: Colors.blue,
+                child: const Text(
+                  "Pick Image from Camera",
+                  style: TextStyle(
+                      color: Colors.white70, fontWeight: FontWeight.bold),
+                ),
+                onPressed: () {
+                  _handleURLButtonPress(context, ImageSourceType.camera);
+                },
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
 void main() {
-  runApp(const MaterialApp(
-    title: 'Blog',
-    home: ToDoList(),
-  ));
+  runApp(
+    const MaterialApp(
+      title: 'Blog',
+      home: ToDoList(),
+    ),
+  );
 }
