@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class Item {
@@ -58,7 +60,8 @@ class ToDoListItem extends StatelessWidget {
             }
           : null,
       leading: CircleAvatar(
-        backgroundColor: Colors.black54,
+        backgroundColor:
+            Colors.primaries[Random().nextInt(Colors.primaries.length)],
         child: Text(item.abbrev()),
       ),
       title: Text(

@@ -16,6 +16,8 @@ class _ToDoListState extends State<ToDoList> {
   final TextEditingController _inputControllerTitle = TextEditingController();
   final TextEditingController _inputControllerDesc = TextEditingController();
   final TextEditingController _inputControllerLink = TextEditingController();
+  //distinguish between controllers
+  int controllerCounter = 0;
 
   // OK and CANCEL Buttons
   final ButtonStyle yesStyle = ElevatedButton.styleFrom(
@@ -71,7 +73,7 @@ class _ToDoListState extends State<ToDoList> {
                   );
                 },
                 controller: _inputControllerLink,
-                decoration: const InputDecoration(hintText: "Images/Links"),
+                decoration: const InputDecoration(hintText: "Links"),
               ),
               ElevatedButton(
                 key: const Key("OKButton"),
@@ -137,9 +139,11 @@ class _ToDoListState extends State<ToDoList> {
             return AlertDialog(
               title: Text(item.name.toString()),
               content: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                // position
-                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(_inputControllerTitle.text),
+                  Text(_inputControllerDesc.text),
+                  Text(_inputControllerLink.text),
+                ],
               ),
             );
           },
@@ -185,17 +189,14 @@ class _ToDoListState extends State<ToDoList> {
               child: Text('Blog Posts'),
             ),
             ListTile(
-              title: const Text('Upload Pictures'),
+              title: const Text('Comments'),
               onTap: () => Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => PageTwo())),
             ),
             ListTile(
-              title: const Text('Upload Pictures'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-                Navigator.pop(context);
-              },
+              title: const Text('Upload Profile Picture'),
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => PageThree())),
             ),
           ],
         ),
@@ -268,20 +269,150 @@ class _ToDoListState extends State<ToDoList> {
   }
 }
 
-class ImageFromGalleryEx extends StatefulWidget {
-  final type;
-  const ImageFromGalleryEx(this.type);
+class Comment extends StatefulWidget {
+  const Comment({super.key});
 
   @override
-  ImageFromGalleryExState createState() => ImageFromGalleryExState(type);
+  State createState() => _CommentState();
 }
 
-class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
+class _CommentState extends State<Comment> {
+  final TextEditingController _inputControllerComment = TextEditingController();
+
+  String valueText = "";
+
+  final List<Item> comments = [const Item(name: 'Add Comments!')];
+  var indexOfItem = 0;
+
+  final _itemSet = <Item>{};
+
+  // Text input window when creating a new post
+  Future<void> _displayTextInputDialogNewComment(BuildContext context) async {
+    print("Loading Dialog");
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('New Post'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            // position
+            mainAxisSize: MainAxisSize.min,
+            // wrap content in flutter
+            // Post Title
+            children: <Widget>[
+              TextField(
+                onChanged: (valueTitle) {
+                  setState(
+                    () {
+                      valueText = valueTitle;
+                    },
+                  );
+                },
+                controller: _inputControllerComment,
+                decoration: const InputDecoration(hintText: "Title"),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _handleCommentListChanged(Item item, bool completed) {
+    setState(
+      () {
+        // When a user changes what's in the list, you need
+        // to change _itemSet inside a setState call to
+        // trigger a rebuild.
+        // The framework then calls build, below,
+        // which updates the visual appearance of the app.
+
+        if (!completed) {
+          print("Loading Dialog");
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(item.name.toString()),
+                content: Column(
+                  children: [
+                    Text(_inputControllerComment.text),
+                  ],
+                ),
+              );
+            },
+          );
+        }
+      },
+    );
+  }
+
+  void _handleDeleteComment(Item item) {
+    setState(() {
+      print("Deleting comment");
+      comments.remove(item);
+      _itemSet.remove(item);
+    });
+  }
+
+  void _handleNewComment(String itemText) {
+    setState(() {
+      print("Adding new comment");
+      Item item = Item(name: itemText);
+      comments.insert(0, item);
+      _inputControllerComment.clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Comments'),
+      ),
+      body: Align(
+        alignment: Alignment.bottomCenter,
+        child: ElevatedButton.icon(
+          icon: const Text('+'),
+          label: const Text("New Comment"),
+          style: ElevatedButton.styleFrom(primary: Colors.green),
+          onPressed: () {
+            _displayTextInputDialogNewComment(context);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class PageTwo extends StatelessWidget {
+  var context;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Comments'),
+      ),
+    );
+  }
+}
+
+class ImageFromGallery extends StatefulWidget {
+  final type;
+  const ImageFromGallery(this.type);
+
+  @override
+  ImageFromGalleryState createState() => ImageFromGalleryState(type);
+}
+
+class ImageFromGalleryState extends State<ImageFromGallery> {
   var _image;
   ImagePicker _picker = ImagePicker();
   var type;
 
-  ImageFromGalleryExState(this.type);
+  ImageFromGalleryState(this.type);
 
   @override
   void initState() {
@@ -318,7 +449,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
               child: Container(
                 width: 200,
                 height: 200,
-                decoration: BoxDecoration(color: Colors.red[200]),
+                decoration: BoxDecoration(color: Colors.blue[200]),
                 child: _image != null
                     ? Image.file(
                         _image,
@@ -327,7 +458,7 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
                         fit: BoxFit.fitHeight,
                       )
                     : Container(
-                        decoration: BoxDecoration(color: Colors.red[200]),
+                        decoration: BoxDecoration(color: Colors.blue[200]),
                         width: 200,
                         height: 200,
                         child: Icon(
@@ -346,17 +477,17 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
 
 enum ImageSourceType { gallery, camera }
 
-class PageTwo extends StatelessWidget {
+class PageThree extends StatelessWidget {
   void _handleURLButtonPress(BuildContext context, var type) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ImageFromGalleryEx(type)));
+        MaterialPageRoute(builder: (context) => ImageFromGallery(type)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Image Picker Example"),
+          title: const Text("Profile Picture for Blog"),
         ),
         body: Center(
           child: Column(
