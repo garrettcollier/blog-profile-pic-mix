@@ -10,18 +10,6 @@ List<Event> sprints = [
 List<Event> distance = [
   Event(event: "1600M", mark: "5:00", year: "2019", meet: "Arkansas State")
 ];
-List<Item> items1 = [Item(name: "Add tasks!")];
-List<Item> items2 = [Item(name: "Add homework!")];
-final _itemSet = <Item>{};
-
-// class ToDoList extends StatefulWidget {
-//   const ToDoList({key, required this.title}) : super(key: key);
-
-//   @override
-//   State createState() => _ToDoListState();
-
-//   final String title;
-// }
 
 class TrackList extends StatefulWidget {
   const TrackList({key, required this.title}) : super(key: key);
