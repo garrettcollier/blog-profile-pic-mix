@@ -43,7 +43,7 @@ class _TrackListState extends State<TrackList> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Test'),
+          title: Text('Add Event'),
           content: SingleChildScrollView(
             child: Container(
               height: 200,
@@ -186,7 +186,7 @@ class _SecondPageState extends State<SecondPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Test'),
+          title: Text('Add Event'),
           content: SingleChildScrollView(
             child: Container(
               height: 200,
