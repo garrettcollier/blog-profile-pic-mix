@@ -85,5 +85,20 @@ void main() {
     expect(listItemFinder, findsNWidgets(2));
   });
 
-  // One to test the tap and press actions on the items?
+  testWidgets('Image from Gallery', (tester) async {
+    await tester.pumpWidget(PageTwo());
+
+    expect(find.byType(FloatingActionButton), findsNothing);
+
+    final listButtonFinder = find.byType(MaterialButton);
+    expect(listButtonFinder, findsNWidgets(2));
+
+    await tester.tap(find.byKey(const Key("GalleryButton")));
+    await tester.pump();
+    expect(find.byType(Image), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key("CameraButton")));
+    await tester.pump();
+    expect(find.byType(Image), findsOneWidget);
+  });
 }

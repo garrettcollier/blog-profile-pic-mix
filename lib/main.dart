@@ -138,13 +138,6 @@ class _ToDoListState extends State<ToDoList> {
           builder: (context) {
             return AlertDialog(
               title: Text(item.name.toString()),
-              content: Column(
-                children: [
-                  Text(_inputControllerTitle.text),
-                  Text(_inputControllerDesc.text),
-                  Text(_inputControllerLink.text),
-                ],
-              ),
             );
           },
         );
@@ -358,6 +351,7 @@ class PageTwo extends StatelessWidget {
           child: Column(
             children: [
               MaterialButton(
+                key: const Key("GalleryButton"),
                 color: Colors.blue,
                 child: const Text(
                   "Pick Image from Gallery",
@@ -369,6 +363,7 @@ class PageTwo extends StatelessWidget {
                 },
               ),
               MaterialButton(
+                key: const Key("CameraButton"),
                 color: Colors.blue,
                 child: const Text(
                   "Pick Image from Camera",
