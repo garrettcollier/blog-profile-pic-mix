@@ -105,10 +105,47 @@ void main() {
     expect(textSubtitle, findsOneWidget);
   });
 
-  testWidgets("Both lists default to one item", (tester) async {});
+  testWidgets("List by default has one item", (tester) async {
+    await tester.pumpWidget(const MaterialApp(
+        home: TrackList(
+      title: "Sprint PR",
+    )));
 
-  testWidgets(
-      "Clicking and typing adds items to the Track List", (tester) async {});
+    final trackItemFinder = find.byType(EventItem);
 
-  // One to test the tap and press actions on the items?
+    expect(trackItemFinder, findsOneWidget);
+  });
+
+  testWidgets("Clicking and typing adds items to the Track List",
+      (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: TrackList(title: "Test")));
+
+    expect(find.byType(TextFormField), findsNothing);
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pump(); // Pump after every action to rebuild the widgets
+    expect(find.text("hi"), findsNothing);
+
+    await tester.enterText(find.byKey(const Key("EventField")), "100M");
+    await tester.pump();
+    expect(find.text("100M"), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key("MarkField")), "10.99");
+    await tester.pump();
+    expect(find.text("10.99"), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key("YearField")), "2022");
+    await tester.pump();
+    expect(find.text("2022"), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key("MeetField")), "SAU");
+    await tester.pump();
+    expect(find.text("SAU"), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key("OKButton")));
+    await tester.pump();
+
+    final textFinderEvent = find.byType(EventItem);
+    expect(textFinderEvent, findsNWidgets(2));
+  });
 }

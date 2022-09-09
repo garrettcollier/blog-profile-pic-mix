@@ -51,18 +51,22 @@ class _TrackListState extends State<TrackList> {
               child: Column(
                 children: [
                   TextFormField(
+                    key: const Key("EventField"),
                     controller: eventController,
                     decoration: InputDecoration(hintText: 'Event'),
                   ),
                   TextFormField(
+                    key: const Key("MarkField"),
                     controller: markController,
                     decoration: InputDecoration(hintText: 'Mark'),
                   ),
                   TextFormField(
+                    key: const Key("YearField"),
                     controller: yearController,
                     decoration: InputDecoration(hintText: 'Year'),
                   ),
                   TextFormField(
+                    key: const Key("MeetField"),
                     controller: meetController,
                     decoration: InputDecoration(hintText: 'Meet'),
                   ),
@@ -76,13 +80,11 @@ class _TrackListState extends State<TrackList> {
               child: Text('Cancel'),
             ),
             TextButton(
+              key: const Key("OKButton"),
               onPressed: () {
                 setState(() {
-                  _handleTrackItem(
-                      eventController.text,
-                      double.parse(markController.text),
-                      yearController.text,
-                      meetController.text);
+                  _handleTrackItem(eventController.text, markController.text,
+                      yearController.text, meetController.text);
                   Navigator.pop(context);
                 });
               },
@@ -219,11 +221,8 @@ class _SecondPageState extends State<SecondPage> {
             TextButton(
               onPressed: () {
                 setState(() {
-                  _handleTrackItem(
-                      eventController.text,
-                      double.parse(markController.text),
-                      yearController.text,
-                      meetController.text);
+                  _handleTrackItem(eventController.text, markController.text,
+                      yearController.text, meetController.text);
                   Navigator.pop(context);
                 });
               },
