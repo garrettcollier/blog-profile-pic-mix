@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:to_dont_list/event_items.dart';
 import 'package:to_dont_list/to_do_items.dart';
 
-List<Event> sprints = [];
+List<Event> sprints = [
+  Event(event: "400M", mark: "49.03", year: "2022", meet: "UCA")
+];
+List<Event> distance = [
+  Event(event: "1600M", mark: "5:00", year: "2019", meet: "Arkansas State")
+];
 List<Item> items1 = [Item(name: "Add tasks!")];
 List<Item> items2 = [Item(name: "Add homework!")];
 final _itemSet = <Item>{};
@@ -27,52 +32,59 @@ class TrackList extends StatefulWidget {
 }
 
 class _TrackListState extends State<TrackList> {
-  @override
   var eventController = TextEditingController();
   var markController = TextEditingController();
   var yearController = TextEditingController();
   var meetController = TextEditingController();
   //Form code comes from https://stackoverflow.com/questions/54480641/flutter-how-to-create-forms-in-popup
+  // ignore: non_constant_identifier_names
   Future<void> _EventInfoPopupForm(BuildContext context) async {
     return showDialog(
       context: context,
-      builder: (_) {
+      builder: (context) {
         return AlertDialog(
-          title: Text('Contact Us'),
-          content: ListView(
-            shrinkWrap: true,
-            children: [
-              TextFormField(
-                controller: eventController,
-                decoration: InputDecoration(hintText: 'Event'),
+          title: Text('Test'),
+          content: SingleChildScrollView(
+            child: Container(
+              height: 200,
+              width: 200,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: eventController,
+                    decoration: InputDecoration(hintText: 'Event'),
+                  ),
+                  TextFormField(
+                    controller: markController,
+                    decoration: InputDecoration(hintText: 'Mark'),
+                  ),
+                  TextFormField(
+                    controller: yearController,
+                    decoration: InputDecoration(hintText: 'Year'),
+                  ),
+                  TextFormField(
+                    controller: meetController,
+                    decoration: InputDecoration(hintText: 'Meet'),
+                  ),
+                ],
               ),
-              TextFormField(
-                controller: markController,
-                decoration: InputDecoration(hintText: 'Mark'),
-              ),
-              TextFormField(
-                controller: yearController,
-                decoration: InputDecoration(hintText: 'Year'),
-              ),
-              TextFormField(
-                controller: meetController,
-                decoration: InputDecoration(hintText: 'Meet'),
-              ),
-            ],
+            ),
           ),
-          actions: [
+          actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                _handleTrackItem(
-                    eventController.text,
-                    double.parse(markController.text),
-                    yearController.text,
-                    meetController.text);
-                Navigator.pop(context);
+                setState(() {
+                  _handleTrackItem(
+                      eventController.text,
+                      double.parse(markController.text),
+                      yearController.text,
+                      meetController.text);
+                  Navigator.pop(context);
+                });
               },
               child: Text('Send'),
             ),
@@ -83,17 +95,21 @@ class _TrackListState extends State<TrackList> {
   }
 
   void _handleTrackItem(event, mark, year, meet) {
-    Event _event = Event(event: event, mark: mark, year: year, meet: meet);
-    sprints.insert(0, _event);
-    eventController.clear();
-    markController.clear();
-    yearController.clear();
-    meetController.clear();
+    setState(() {
+      Event _event = Event(event: event, mark: mark, year: year, meet: meet);
+      sprints.insert(0, _event);
+      eventController.clear();
+      markController.clear();
+      yearController.clear();
+      meetController.clear();
+    });
   }
 
   void _handleEventEdit(Event event) {
-    sprints.remove(event);
-    _EventInfoPopupForm(context);
+    setState(() {
+      sprints.remove(event);
+      _EventInfoPopupForm(context);
+    });
   }
 
   Widget build(BuildContext context) {
@@ -156,233 +172,67 @@ class SecondPage extends StatefulWidget {
   final String title;
 }
 
-// class _ToDoListState extends State<ToDoList> {
-//   // Dialog with text from https://www.appsdeveloperblog.com/alert-dialog-with-a-text-field-in-flutter/
-//   final TextEditingController _inputController = TextEditingController();
-//   final ButtonStyle yesStyle = ElevatedButton.styleFrom(
-//       textStyle: const TextStyle(fontSize: 20), primary: Colors.green);
-//   final ButtonStyle noStyle = ElevatedButton.styleFrom(
-//       textStyle: const TextStyle(fontSize: 20), primary: Colors.red);
-
-//   Future<void> _displayTextInputDialog(BuildContext context) async {
-//     print("Loading Dialog");
-//     return showDialog(
-//         context: context,
-//         builder: (context) {
-//           return AlertDialog(
-//             title: const Text('Item To Add'),
-//             content: TextField(
-//               onChanged: (value) {
-//                 setState(() {
-//                   valueText = value;
-//                 });
-//               },
-//               controller: _inputController,
-//               decoration:
-//                   const InputDecoration(hintText: "type something here"),
-//             ),
-//             actions: <Widget>[
-//               ElevatedButton(
-//                 key: const Key("OKButton"),
-//                 style: yesStyle,
-//                 child: const Text('OK'),
-//                 onPressed: () {
-//                   setState(() {
-//                     _handleNewItem(valueText);
-//                     Navigator.pop(context);
-//                   });
-//                 },
-//               ),
-
-//               // https://stackoverflow.com/questions/52468987/how-to-turn-disabled-button-into-enabled-button-depending-on-conditions
-//               ValueListenableBuilder<TextEditingValue>(
-//                 valueListenable: _inputController,
-//                 builder: (context, value, child) {
-//                   return ElevatedButton(
-//                     key: const Key("CancelButton"),
-//                     style: noStyle,
-//                     onPressed: value.text.isNotEmpty
-//                         ? () {
-//                             setState(() {
-//                               Navigator.pop(context);
-//                             });
-//                           }
-//                         : null,
-//                     child: const Text('Cancel'),
-//                   );
-//                 },
-//               ),
-//             ],
-//           );
-//         });
-//   }
-
-//   String valueText = "";
-
-//   //final List<Item> items = [const Item(name: "add more todos")];
-
-//   void _handleListChanged(Item item, bool completed) {
-//     setState(() {
-//       // When a user changes what's in the list, you need
-//       // to change _itemSet inside a setState call to
-//       // trigger a rebuild.
-//       // The framework then calls build, below,
-//       // which updates the visual appearance of the app.
-
-//       items1.remove(item);
-//       if (!completed) {
-//         print("Completing");
-//         _itemSet.add(item);
-//         items1.add(item);
-//       } else {
-//         print("Making Undone");
-//         _itemSet.remove(item);
-//         items1.insert(0, item);
-//       }
-//     });
-//   }
-
-//   void _handleDeleteItem(Item item) {
-//     setState(() {
-//       print("Deleting item");
-//       items1.remove(item);
-//     });
-//   }
-
-//   void _handleNewItem(String itemText) {
-//     setState(() {
-//       print("Adding new item");
-//       Item item = Item(name: itemText);
-//       items1.insert(0, item);
-//       _inputController.clear();
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         appBar: AppBar(
-//           title: const Text('Personal List'),
-//         ),
-//         // drawer code from https://rushabhshah065.medium.com/flutter-navigation-drawer-tab-layout-e74074c249ce
-//         drawer: Drawer(
-//           child: ListView(
-//             children: [
-//               DrawerHeader(
-//                 decoration: BoxDecoration(color: Colors.green),
-//                 child: Text(
-//                   "Categories",
-//                   textAlign: TextAlign.justify,
-//                   textScaleFactor: 2.0,
-//                 ),
-//               ),
-//               ListTile(
-//                   title: Text("Personal"),
-//                   onTap: () {
-//                     Navigator.push(context,
-//                         MaterialPageRoute(builder: (context) {
-//                       return const ToDoList(title: 'Personal List');
-//                     }));
-//                   }),
-//               ListTile(
-//                 title: Text("School"),
-//                 onTap: () {
-//                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-//                     return const SecondPage(title: 'SecondPage');
-//                   }));
-//                 },
-//               ),
-//               Spacer(
-//                 flex: 10,
-//               ),
-//               // Align(
-//               //     alignment: Alignment.bottomRight,
-//               //     child: FloatingActionButton(
-//               //         child: const Icon(Icons.add),
-//               //         onPressed: () {
-//               //           _displayTextInputDialog(context);
-//               //         }))
-//             ],
-//           ),
-//         ),
-//         body: ListView(
-//           padding: const EdgeInsets.symmetric(vertical: 8.0),
-//           children: items1.map((item) {
-//             return ToDoListItem(
-//               item: item,
-//               completed: _itemSet.contains(item),
-//               onListChanged: _handleListChanged,
-//               onDeleteItem: _handleDeleteItem,
-//             );
-//           }).toList(),
-//         ),
-//         floatingActionButton: FloatingActionButton(
-//             child: const Icon(Icons.add),
-//             onPressed: () {
-//               _displayTextInputDialog(context);
-//             }));
-//   }
-// }
-
-// Going to redo this page to be a list calender that orders the to dos by the dates that I will add in the first page
 class _SecondPageState extends State<SecondPage> {
-  // Dialog with text from https://www.appsdeveloperblog.com/alert-dialog-with-a-text-field-in-flutter/
-  final TextEditingController _inputController = TextEditingController();
-  final ButtonStyle yesStyle = ElevatedButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 20), primary: Colors.green);
-  final ButtonStyle noStyle = ElevatedButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 20), primary: Colors.red);
-  Future<void> _displayTextInputDialog(BuildContext context) async {
-    print("Loading Dialog");
+  var eventController = TextEditingController();
+  var markController = TextEditingController();
+  var yearController = TextEditingController();
+  var meetController = TextEditingController();
+  //Form code comes from https://stackoverflow.com/questions/54480641/flutter-how-to-create-forms-in-popup
+  // ignore: non_constant_identifier_names
+  Future<void> _EventInfoPopupForm(BuildContext context) async {
     return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Item To Add'),
-            content: TextField(
-              onChanged: (value) {
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Test'),
+          content: SingleChildScrollView(
+            child: Container(
+              height: 200,
+              width: 200,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: eventController,
+                    decoration: InputDecoration(hintText: 'Event'),
+                  ),
+                  TextFormField(
+                    controller: markController,
+                    decoration: InputDecoration(hintText: 'Mark'),
+                  ),
+                  TextFormField(
+                    controller: yearController,
+                    decoration: InputDecoration(hintText: 'Year'),
+                  ),
+                  TextFormField(
+                    controller: meetController,
+                    decoration: InputDecoration(hintText: 'Meet'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
                 setState(() {
-                  valueText = value;
+                  _handleTrackItem(
+                      eventController.text,
+                      double.parse(markController.text),
+                      yearController.text,
+                      meetController.text);
+                  Navigator.pop(context);
                 });
               },
-              controller: _inputController,
-              decoration:
-                  const InputDecoration(hintText: "type something here"),
+              child: Text('Send'),
             ),
-            actions: <Widget>[
-              ElevatedButton(
-                key: const Key("OKButton"),
-                style: yesStyle,
-                child: const Text('OK'),
-                onPressed: () {
-                  setState(() {
-                    _handleNewItem(valueText);
-                    Navigator.pop(context);
-                  });
-                },
-              ),
-
-              // https://stackoverflow.com/questions/52468987/how-to-turn-disabled-button-into-enabled-button-depending-on-conditions
-              ValueListenableBuilder<TextEditingValue>(
-                valueListenable: _inputController,
-                builder: (context, value, child) {
-                  return ElevatedButton(
-                    key: const Key("CancelButton"),
-                    style: noStyle,
-                    onPressed: value.text.isNotEmpty
-                        ? () {
-                            setState(() {
-                              Navigator.pop(context);
-                            });
-                          }
-                        : null,
-                    child: const Text('Cancel'),
-                  );
-                },
-              ),
-            ],
-          );
-        });
+          ],
+        );
+      },
+    );
   }
 
   String valueText = "";
@@ -391,40 +241,21 @@ class _SecondPageState extends State<SecondPage> {
 
   final _itemSet = <Item>{};
 
-  void _handleListChanged(Item item, bool completed) {
+  void _handleTrackItem(event, mark, year, meet) {
     setState(() {
-      // When a user changes what's in the list, you need
-      // to change _itemSet inside a setState call to
-      // trigger a rebuild.
-      // The framework then calls build, below,
-      // which updates the visual appearance of the app.
-
-      items2.remove(item);
-      if (!completed) {
-        print("Completing");
-        _itemSet.add(item);
-        items2.add(item);
-      } else {
-        print("Making Undone");
-        _itemSet.remove(item);
-        items2.insert(0, item);
-      }
+      Event _event = Event(event: event, mark: mark, year: year, meet: meet);
+      sprints.insert(0, _event);
+      eventController.clear();
+      markController.clear();
+      yearController.clear();
+      meetController.clear();
     });
   }
 
-  void _handleDeleteItem(Item item) {
+  void _handleEventEdit(Event event) {
     setState(() {
-      print("Deleting item");
-      items2.remove(item);
-    });
-  }
-
-  void _handleNewItem(String itemText) {
-    setState(() {
-      print("Adding new item");
-      Item item = Item(name: itemText);
-      items2.insert(0, item);
-      _inputController.clear();
+      sprints.remove(event);
+      _EventInfoPopupForm(context);
     });
   }
 
@@ -432,7 +263,7 @@ class _SecondPageState extends State<SecondPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('School Work'),
+          title: const Text('Distance Personal Records'),
         ),
         // drawer code from https://rushabhshah065.medium.com/flutter-navigation-drawer-tab-layout-e74074c249ce
         drawer: Drawer(
@@ -441,53 +272,43 @@ class _SecondPageState extends State<SecondPage> {
               DrawerHeader(
                 decoration: BoxDecoration(color: Colors.green),
                 child: Text(
-                  "Categories",
+                  "Type of Event",
                   textAlign: TextAlign.justify,
                   textScaleFactor: 2.0,
                 ),
               ),
               ListTile(
-                title: Text("Personal"),
+                  title: Text("Sprints"),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const TrackList(title: 'Sprints');
+                    }));
+                  }),
+              ListTile(
+                title: Text("Distance"),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const TrackList(title: 'Personal List');
+                    return const SecondPage(title: 'Distance');
                   }));
                 },
               ),
-              ListTile(
-                title: Text("School"),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              Spacer(
-                flex: 10,
-              ),
-              // Align(
-              //     alignment: Alignment.bottomRight,
-              //     child: FloatingActionButton(
-              //         child: const Icon(Icons.add),
-              //         onPressed: () {
-              //           _displayTextInputDialog(context);
-              //         }))
             ],
           ),
         ),
         body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          children: items2.map((item) {
-            return ToDoListItem(
-              item: item,
-              completed: _itemSet.contains(item),
-              onListChanged: _handleListChanged,
-              onDeleteItem: _handleDeleteItem,
+          children: distance.map((item) {
+            return EventItem(
+              event: item,
+              eventEdit: _handleEventEdit,
             );
           }).toList(),
         ),
         floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () {
-              _displayTextInputDialog(context);
+              _EventInfoPopupForm(context);
             }));
   }
 }

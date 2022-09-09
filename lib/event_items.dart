@@ -8,7 +8,7 @@ class Event {
       required this.meet});
 
   final String event;
-  final double mark;
+  final String mark;
   final String year;
   final String meet;
 }
@@ -29,7 +29,7 @@ class EventItem extends StatelessWidget {
         eventEdit(event);
       },
       title: Text(event.event),
-      subtitle: Text("Mark: ${event.mark}, Where: ${event.meet}${event.year}"),
+      subtitle: Text("Mark: ${event.mark}, Where: ${event.meet} ${event.year}"),
     );
   }
 }
