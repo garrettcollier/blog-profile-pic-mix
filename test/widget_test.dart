@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:to_dont_list/main.dart';
 import 'package:to_dont_list/to_do_items.dart';
@@ -85,20 +86,34 @@ void main() {
     expect(listItemFinder, findsNWidgets(2));
   });
 
-  testWidgets('Image from Gallery', (tester) async {
-    await tester.pumpWidget(PageTwo());
+  test('ImagePicker Checker', () {
+    // check both image sources
+    ImagePicker imgpick = ImagePicker();
 
-    expect(find.byType(FloatingActionButton), findsNothing);
+    var source = ImageSource.camera;
 
-    final listButtonFinder = find.byType(MaterialButton);
-    expect(listButtonFinder, findsNWidgets(2));
+    imgpick.pickImage(
+        source: source,
+        imageQuality: 50,
+        preferredCameraDevice: CameraDevice.front);
 
-    await tester.tap(find.byKey(const Key("GalleryButton")));
-    await tester.pump();
-    expect(find.byType(Image), findsOneWidget);
+    var source2 = ImageSource.gallery;
 
-    await tester.tap(find.byKey(const Key("CameraButton")));
-    await tester.pump();
-    expect(find.byType(Image), findsOneWidget);
+    imgpick.pickImage(
+        source: source2,
+        imageQuality: 50,
+        preferredCameraDevice: CameraDevice.front);
+  });
+
+  test('ImageGallery Checker', () {
+    var type = ImageSourceType.camera;
+
+    ImageFromGallery imageFromGallery = ImageFromGallery(type);
+    expect(type, ImageSourceType.camera);
+
+    var type2 = ImageSourceType.gallery;
+
+    ImageFromGallery imageFromGallery2 = ImageFromGallery(type2);
+    expect(type2, ImageSourceType.gallery);
   });
 }
