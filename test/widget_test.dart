@@ -34,56 +34,12 @@ void main() {
     expect(textFinder, findsOneWidget);
   });
 
-  testWidgets('ToDoListItem has a Circle Avatar with abbreviation',
-      (tester) async {
-    await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-            body: ToDoListItem(
-                item: const Item(name: "test"),
-                completed: true,
-                onListChanged: (Item item, bool completed) {},
-                onDeleteItem: (Item item) {}))));
-    final abbvFinder = find.text('t');
-    final avatarFinder = find.byType(CircleAvatar);
-
-    CircleAvatar circ = tester.firstWidget(avatarFinder);
-    Text ctext = circ.child as Text;
-
-    // Use the `findsOneWidget` matcher provided by flutter_test to verify
-    // that the Text widgets appear exactly once in the widget tree.
-    expect(abbvFinder, findsOneWidget);
-    expect(circ.backgroundColor, Colors.black54);
-    expect(ctext.data, "t");
-  });
-
   testWidgets('Default ToDoList has one item', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: ToDoList()));
 
     final listItemFinder = find.byType(ToDoListItem);
 
     expect(listItemFinder, findsOneWidget);
-  });
-
-  testWidgets('Clicking and Typing adds item to ToDoList', (tester) async {
-    await tester.pumpWidget(const MaterialApp(home: ToDoList()));
-
-    expect(find.byType(TextField), findsNothing);
-
-    await tester.tap(find.byType(FloatingActionButton));
-    await tester.pump(); // Pump after every action to rebuild the widgets
-    expect(find.text("hi"), findsNothing);
-
-    await tester.enterText(find.byType(TextField), 'hi');
-    await tester.pump();
-    expect(find.text("hi"), findsOneWidget);
-
-    await tester.tap(find.byKey(const Key("OKButton")));
-    await tester.pump();
-    expect(find.text("hi"), findsOneWidget);
-
-    final listItemFinder = find.byType(ToDoListItem);
-
-    expect(listItemFinder, findsNWidgets(2));
   });
 
   test('ImagePicker Checker', () {
@@ -115,5 +71,20 @@ void main() {
 
     ImageFromGallery imageFromGallery2 = ImageFromGallery(type2);
     expect(type2, ImageSourceType.gallery);
+  });
+
+  testWidgets('Nav opens Page', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: ToDoList()));
+
+    // find the page two navigator button and push it
+    expect(find.byType(ListTile), findsNWidgets(1));
+    await tester.tap(find.byType(ListTile));
+    await tester.pumpAndSettle();
+    await tester.pump(); // Pump after every action to rebuild the widgets
+  });
+
+  testWidgets('Image Page has 2 buttons', (tester) async {
+    await tester.pumpWidget(MaterialApp(home: PageTwo()));
+    expect(find.byType(MaterialButton), findsNWidgets(2));
   });
 }

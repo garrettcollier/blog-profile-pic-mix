@@ -4,6 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:to_dont_list/to_do_items.dart';
 import 'package:image_picker/image_picker.dart';
 
+// I can see a new StatefulWidget, but I do not see a new data class, similar to Item.
+
+// Add test for new class added
+
+// The delete by index shows too many, I select 1 right after loading the app, and it crashed.
+
+// Your screenshots are not from mobile emulator
+
+// I got the app to take a picture, hooray! Nice use of this library! But I don't know where the picture is used elsewhere in the app?
+
 class ToDoList extends StatefulWidget {
   const ToDoList({super.key});
 
@@ -21,9 +31,9 @@ class _ToDoListState extends State<ToDoList> {
 
   // OK and CANCEL Buttons
   final ButtonStyle yesStyle = ElevatedButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 20), primary: Colors.green);
+      textStyle: const TextStyle(fontSize: 20), backgroundColor: Colors.green);
   final ButtonStyle noStyle = ElevatedButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 20), primary: Colors.red);
+      textStyle: const TextStyle(fontSize: 20), backgroundColor: Colors.red);
 
   // Text input window when creating a new post
   Future<void> _displayTextInputDialogNewPost(BuildContext context) async {
@@ -119,7 +129,6 @@ class _ToDoListState extends State<ToDoList> {
   String valueText = "";
 
   final List<Item> items = [const Item(name: 'Add New Blog Posts')];
-  var indexOfItem = 0;
 
   final _itemSet = <Item>{};
 
@@ -182,6 +191,7 @@ class _ToDoListState extends State<ToDoList> {
               child: Text('Blog Posts'),
             ),
             ListTile(
+              key: const Key("PageTwoButton"),
               title: const Text('Upload Profile Picture'),
               onTap: () => Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => PageTwo())),
@@ -208,32 +218,25 @@ class _ToDoListState extends State<ToDoList> {
           Column(
             children: [
               const Text(
-                'Number of current Blog posts',
-                style: TextStyle(
-                  color: Colors.blue,
-                ),
-              ),
-              const Text(
-                'Delete Post using index based on list order',
+                'Delete Post using number based on list order',
                 style: TextStyle(
                   color: Colors.red,
                 ),
               ),
               DropdownButton(
                 alignment: Alignment.bottomLeft,
-                value: indexOfItem,
-                items: <int>[for (var i = 0; i <= items.length; i++) i]
-                    .map((int value) {
+                items:
+                    [for (var i = 0; i < items.length; i++) i].map((int value) {
                   return DropdownMenuItem<int>(
                     value: value,
-                    child: Text(value.toString()),
+                    child: Text((value + 1).toString()),
                   );
                 }).toList(),
                 onChanged: (int? value) {
                   setState(
                     () {
-                      indexOfItem = value!;
-                      _handleDeleteItem(items.elementAt(indexOfItem));
+                      value != null;
+                      _handleDeleteItem(items.elementAt(value!));
                     },
                   );
                 },
@@ -245,7 +248,7 @@ class _ToDoListState extends State<ToDoList> {
             child: ElevatedButton.icon(
               icon: const Text('+'),
               label: const Text("New Post"),
-              style: ElevatedButton.styleFrom(primary: Colors.green),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
               onPressed: () {
                 _displayTextInputDialogNewPost(context);
               },
@@ -257,9 +260,21 @@ class _ToDoListState extends State<ToDoList> {
   }
 }
 
+// new class to store image
+class ImageHolder {
+  const ImageHolder({required this.image, required this.path});
+
+  final XFile image;
+  final String path;
+
+  Future<void> saveImage() {
+    return image.saveTo(path);
+  }
+}
+
 class ImageFromGallery extends StatefulWidget {
   final type;
-  const ImageFromGallery(this.type);
+  const ImageFromGallery(this.type, {super.key});
 
   @override
   ImageFromGalleryState createState() => ImageFromGalleryState(type);
@@ -336,6 +351,8 @@ class ImageFromGalleryState extends State<ImageFromGallery> {
 enum ImageSourceType { gallery, camera }
 
 class PageTwo extends StatelessWidget {
+  const PageTwo({super.key});
+
   void _handleURLButtonPress(BuildContext context, var type) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => ImageFromGallery(type)));
