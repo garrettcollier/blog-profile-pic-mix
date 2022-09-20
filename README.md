@@ -18,8 +18,12 @@ If you ever desired a free app that could store blog posts and upload photos or 
 
 <img src="BlogHome.png">
 
+<img src="Nav.png">
+
 <img src="ImageHomePage.png">
 
 <img src="SelectCamera.png">
 
 <img src="SelectGallery.png">
+
+<img src="Comments.png">
