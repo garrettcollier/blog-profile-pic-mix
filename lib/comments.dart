@@ -1,30 +1,27 @@
+//Comment class to add comments
 import 'package:flutter/material.dart';
 
-class Item {
-  const Item({required this.name});
+class Comment {
+  const Comment({required this.content});
 
-  final String name;
-
-  String abbrev() {
-    return name.substring(0, 1);
-  }
+  final String content;
 }
 
-typedef ToDoListChangedCallback = Function(Item item, bool completed);
-typedef ToDoListRemovedCallback = Function(Item item);
+typedef CommentListChangedCallback = Function(Comment comment, bool completed);
+typedef CommentListRemovedCallback = Function(Comment comment);
 
-class ToDoListItem extends StatelessWidget {
-  ToDoListItem(
-      {required this.item,
+class CommentList extends StatelessWidget {
+  CommentList(
+      {required this.comment,
       required this.completed,
-      required this.onListChanged,
-      required this.onDeleteItem})
-      : super(key: ObjectKey(item));
+      required this.onComListChanged,
+      required this.onDeleteComment})
+      : super(key: ObjectKey(comment));
 
-  final Item item;
+  final Comment comment;
   final bool completed;
-  final ToDoListChangedCallback onListChanged;
-  final ToDoListRemovedCallback onDeleteItem;
+  final CommentListChangedCallback onComListChanged;
+  final CommentListRemovedCallback onDeleteComment;
 
   Color _getColor(BuildContext context) {
     // The theme depends on the BuildContext because different
@@ -50,19 +47,18 @@ class ToDoListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        onListChanged(item, completed);
+        onComListChanged(comment, completed);
       },
       onLongPress: completed
           ? () {
-              onDeleteItem(item);
+              onDeleteComment(comment);
             }
           : null,
-      leading: CircleAvatar(
-        backgroundColor: Colors.blue,
-        child: Text(item.abbrev()),
+      leading: const CircleAvatar(
+        backgroundColor: Colors.yellow,
       ),
       title: Text(
-        item.name,
+        comment.content,
         style: _getTextStyle(context),
       ),
     );

@@ -3,12 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:to_dont_list/to_do_items.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:to_dont_list/comments.dart';
 
 // I can see a new StatefulWidget, but I do not see a new data class, similar to Item.
 
 // Add test for new class added
-
-// The delete by index shows too many, I select 1 right after loading the app, and it crashed.
 
 // Your screenshots are not from mobile emulator
 
@@ -193,8 +192,14 @@ class _ToDoListState extends State<ToDoList> {
             ListTile(
               key: const Key("PageTwoButton"),
               title: const Text('Upload Profile Picture'),
-              onTap: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => PageTwo())),
+              onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const PageTwo())),
+            ),
+            ListTile(
+              key: const Key("PageThreeButton"),
+              title: const Text('Comments'),
+              onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const PageThree())),
             ),
           ],
         ),
@@ -260,18 +265,6 @@ class _ToDoListState extends State<ToDoList> {
   }
 }
 
-// new class to store image
-class ImageHolder {
-  const ImageHolder({required this.image, required this.path});
-
-  final XFile image;
-  final String path;
-
-  Future<void> saveImage() {
-    return image.saveTo(path);
-  }
-}
-
 class ImageFromGallery extends StatefulWidget {
   final type;
   const ImageFromGallery(this.type, {super.key});
@@ -281,7 +274,7 @@ class ImageFromGallery extends StatefulWidget {
 }
 
 class ImageFromGalleryState extends State<ImageFromGallery> {
-  var _image;
+  static var _image;
   ImagePicker _picker = ImagePicker();
   var type;
 
@@ -394,6 +387,153 @@ class PageTwo extends StatelessWidget {
             ],
           ),
         ));
+  }
+}
+
+class PageThree extends StatefulWidget {
+  const PageThree({super.key});
+
+  @override
+  State createState() => _CommentListState();
+}
+
+class _CommentListState extends State<PageThree> {
+  var comment = const Comment(content: "");
+  final _commentSet = <Comment>{};
+  final List<Comment> comments = [
+    const Comment(content: "I like the image you choose on the other page")
+  ];
+  final TextEditingController _inputControllerContent = TextEditingController();
+
+  // Text input window when creating a new post
+  Future<void> _displayTextInputDialogNewPost(BuildContext context) async {
+    print("Loading Dialog");
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('New Comment'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            // position
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                onChanged: (value) {
+                  setState(
+                    () {
+                      value = value;
+                    },
+                  );
+                },
+                controller: _inputControllerContent,
+                decoration: const InputDecoration(hintText: "Content"),
+              ),
+              ElevatedButton(
+                key: const Key("OKButton"),
+                child: const Text('OK'),
+                onPressed: () {
+                  setState(
+                    () {
+                      _handleNewComment(_inputControllerContent.text);
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              ),
+              ValueListenableBuilder<TextEditingValue>(
+                valueListenable: _inputControllerContent,
+                builder: (context, value, child) {
+                  return ElevatedButton(
+                    key: const Key("CancelButton"),
+                    onPressed: value.text.isNotEmpty
+                        ? () {
+                            setState(
+                              () {
+                                Navigator.pop(context);
+                              },
+                            );
+                          }
+                        : null,
+                    child: const Text('Cancel'),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _handleComListChanged(Comment comment, bool completed) {
+    setState(() {
+      if (!completed) {
+        print("Loading Dialog");
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(comment.content.toString()),
+            );
+          },
+        );
+      }
+    });
+  }
+
+  void _handleDeleteComment(Comment comment) {
+    setState(() {
+      print("Deleting comment");
+      comments.remove(comment);
+      _commentSet.remove(comment);
+    });
+  }
+
+  void _handleNewComment(String commentText) {
+    setState(() {
+      print("Adding new comment");
+      Comment comment = Comment(content: commentText);
+      comments.insert(0, comment);
+      _inputControllerContent.clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Comments"),
+      ),
+      body: Center(
+        child: Column(children: [
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              children: comments.map((comment) {
+                return CommentList(
+                  comment: comment,
+                  completed: _commentSet.contains(comment),
+                  onComListChanged: _handleComListChanged,
+                  onDeleteComment: _handleDeleteComment,
+                );
+              }).toList(),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: ElevatedButton.icon(
+              icon: const Text('+'),
+              label: const Text("New Comment"),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+              onPressed: () {
+                _displayTextInputDialogNewPost(context);
+              },
+            ),
+          ),
+        ]),
+      ),
+    );
   }
 }
 
