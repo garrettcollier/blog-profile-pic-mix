@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:to_dont_list/comments.dart';
 
 import 'package:to_dont_list/main.dart';
 import 'package:to_dont_list/to_do_items.dart';
@@ -86,5 +87,28 @@ void main() {
   testWidgets('Image Page has 2 buttons', (tester) async {
     await tester.pumpWidget(MaterialApp(home: PageTwo()));
     expect(find.byType(MaterialButton), findsNWidgets(2));
+  });
+
+  testWidgets('Comments List has 1 comment', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: CommentList(
+                comment: const Comment(content: "test"),
+                completed: true,
+                onComListChanged: (Comment comment, bool completed) {},
+                onDeleteComment: (Comment comment) {}))));
+    final textFinder = find.text('test');
+
+    // Use the `findsOneWidget` matcher provided by flutter_test to verify
+    // that the Text widgets appear exactly once in the widget tree.
+    expect(textFinder, findsOneWidget);
+  });
+
+  testWidgets('Default Comment list has one item', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: PageThree()));
+
+    final listItemFinder = find.byType(CommentList);
+
+    expect(listItemFinder, findsOneWidget);
   });
 }

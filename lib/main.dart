@@ -5,14 +5,6 @@ import 'package:to_dont_list/to_do_items.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:to_dont_list/comments.dart';
 
-// I can see a new StatefulWidget, but I do not see a new data class, similar to Item.
-
-// Add test for new class added
-
-// Your screenshots are not from mobile emulator
-
-// I got the app to take a picture, hooray! Nice use of this library! But I don't know where the picture is used elsewhere in the app?
-
 class ToDoList extends StatefulWidget {
   const ToDoList({super.key});
 
