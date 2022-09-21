@@ -8,3 +8,6 @@ This app is meant to be a place for any athlete that is passionate about track a
 
 ## Images
 
+![Event Add Screenshot](https://user-images.githubusercontent.com/74222391/191571408-4ed97d4b-1726-4310-b036-4e884fdb06a5.png)
+![Hamburger Expanded Sidebar Screenshot](https://user-images.githubusercontent.com/74222391/191571427-757ed928-2a3c-4925-a9a8-b079be280d9c.png)
+![Main Page Screenshot](https://user-images.githubusercontent.com/74222391/191571437-875ee3b0-c6a9-46bb-910d-04d2ff71d671.png)
