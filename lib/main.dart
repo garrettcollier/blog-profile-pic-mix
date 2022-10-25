@@ -40,26 +40,22 @@ class _TrackListState extends State<TrackList> {
               width: 200,
               child: Column(
                 children: [
-                  TextFormField(
-                    key: const Key("EventField"),
-                    controller: eventController,
-                    decoration: InputDecoration(hintText: 'Event'),
-                  ),
-                  TextFormField(
-                    key: const Key("MarkField"),
-                    controller: markController,
-                    decoration: InputDecoration(hintText: 'Mark'),
-                  ),
-                  TextFormField(
-                    key: const Key("YearField"),
-                    controller: yearController,
-                    decoration: InputDecoration(hintText: 'Year'),
-                  ),
-                  TextFormField(
-                    key: const Key("MeetField"),
-                    controller: meetController,
-                    decoration: InputDecoration(hintText: 'Meet'),
-                  ),
+                  FormFieldTemplate(
+                      controller: eventController,
+                      decoration: 'Event',
+                      formkey: "EventField"),
+                  FormFieldTemplate(
+                      controller: markController,
+                      decoration: 'Mark',
+                      formkey: "MarkField"),
+                  FormFieldTemplate(
+                      controller: yearController,
+                      decoration: 'Year',
+                      formkey: "YearField"),
+                  FormFieldTemplate(
+                      controller: meetController,
+                      decoration: 'Meet',
+                      formkey: "MeetField"),
                 ],
               ),
             ),
@@ -97,11 +93,15 @@ class _TrackListState extends State<TrackList> {
         // renamed to newEvent to make clearer
         Event newEvent =
             Event(event: event, mark: mark, year: year, meet: meet);
+        // if widget title is sprints then insert event in sprints
         if (getTitle() == 'Sprints') {
           sprints.insert(0, newEvent);
-        } else {
+        }
+        // otherwise insert into distances
+        else {
           distances.insert(0, newEvent);
         }
+        // clear all controllers
         eventController.clear();
         markController.clear();
         yearController.clear();
@@ -122,7 +122,7 @@ class _TrackListState extends State<TrackList> {
         else {
           distances.remove(event);
         }
-        // commented out given it shows a deleted event
+        // commented out given it shows a deleted event's information
         // _EventInfoPopupForm(context);
       },
     );
@@ -332,9 +332,32 @@ class _TrackListState extends State<TrackList> {
 //   }
 // }
 
+class FormFieldTemplate extends StatelessWidget {
+  const FormFieldTemplate(
+      {super.key,
+      required this.controller,
+      required this.decoration,
+      required this.formkey});
+
+  final String formkey;
+  final TextEditingController controller;
+  final String decoration;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      key: Key(formkey),
+      controller: controller,
+      decoration: InputDecoration(hintText: decoration),
+    );
+  }
+}
+
 // widget for listing the events as a List Tile within navigator
 class ListEvents extends StatelessWidget {
   const ListEvents({Key? key, required this.title}) : super(key: key);
+
+  // passes title to determine type of list to display
   final String title;
 
   @override
