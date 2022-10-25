@@ -9,7 +9,7 @@ import 'package:to_dont_list/event_items.dart';
 List<Event> sprints = [
   Event(event: "400M", mark: "49.03", year: "2022", meet: "UCA")
 ];
-List<Event> distance = [
+List<Event> distances = [
   Event(event: "1600M", mark: "5:00", year: "2019", meet: "Arkansas State")
 ];
 
@@ -86,78 +86,106 @@ class _TrackListState extends State<TrackList> {
     );
   }
 
-  void _handleTrackItem(event, mark, year, meet) {
-    setState(() {
-      Event newEvent = Event(event: event, mark: mark, year: year, meet: meet);
-      sprints.insert(0, newEvent);
-      eventController.clear();
-      markController.clear();
-      yearController.clear();
-      meetController.clear();
-    });
+  // get the current title of the widget
+  String getTitle() {
+    return widget.title;
   }
 
+  void _handleTrackItem(event, mark, year, meet) {
+    setState(
+      () {
+        // renamed to newEvent to make clearer
+        Event newEvent =
+            Event(event: event, mark: mark, year: year, meet: meet);
+        if (getTitle() == 'Sprints') {
+          sprints.insert(0, newEvent);
+        } else {
+          distances.insert(0, newEvent);
+        }
+        eventController.clear();
+        markController.clear();
+        yearController.clear();
+        meetController.clear();
+      },
+    );
+  }
+
+  // tap on event to delete
   void _handleEventEdit(Event event) {
-    setState(() {
-      sprints.remove(event);
-      _EventInfoPopupForm(context);
-    });
+    setState(
+      () {
+        // if sprints then remove sprint event
+        if (getTitle() == 'Sprints') {
+          sprints.remove(event);
+        }
+        // else remove distance
+        else {
+          distances.remove(event);
+        }
+        // commented out given it shows a deleted event
+        // _EventInfoPopupForm(context);
+      },
+    );
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Sprint Personal Records'),
-        ),
-        // drawer code from https://rushabhshah065.medium.com/flutter-navigation-drawer-tab-layout-e74074c249ce
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(color: Colors.green),
-                child: Text(
-                  "Type of Event",
-                  textAlign: TextAlign.justify,
-                  textScaleFactor: 2.0,
-                ),
+      appBar: AppBar(
+        // determine title based on widget title parameter
+        title: Text(getTitle() == 'Sprints'
+            ? "Sprint Personal Records"
+            : "Distance Personal Records"),
+      ),
+      // drawer code from https://rushabhshah065.medium.com/flutter-navigation-drawer-tab-layout-e74074c249ce
+      drawer: Drawer(
+        child: ListView(
+          children: const [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.green),
+              child: Text(
+                "Type of Event",
+                textAlign: TextAlign.justify,
+                textScaleFactor: 2.0,
               ),
-              ListTile(
-                  title: Text("Sprints"),
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return const TrackList(title: 'Sprints');
-                    }));
-                  }),
-              ListTile(
-                title: Text("Distance"),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const TrackList(title: 'Distance');
-                  }));
+            ),
+            // call ListEvents Stateless widget to give list tile for navigation
+            ListEvents(title: 'Sprints'),
+            ListEvents(title: 'Distance'),
+          ],
+        ),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        // set children as either sprints or distances depending on title
+        children: getTitle() == 'Sprints'
+            ? sprints.map(
+                (item) {
+                  return EventItem(
+                    event: item,
+                    eventEdit: _handleEventEdit,
+                  );
                 },
-              ),
-            ],
-          ),
-        ),
-        body: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          children: sprints.map((item) {
-            return EventItem(
-              event: item,
-              eventEdit: _handleEventEdit,
-            );
-          }).toList(),
-        ),
-        floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () {
-              _EventInfoPopupForm(context);
-            }));
+              ).toList()
+            : distances.map(
+                (item) {
+                  return EventItem(
+                    event: item,
+                    eventEdit: _handleEventEdit,
+                  );
+                },
+              ).toList(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          _EventInfoPopupForm(context);
+        },
+      ),
+    );
   }
 }
 
-// UNNEEDED CLASS (BOTH PAGES CALL TRACKLIST CLASS)
+// UNNEEDED SECOND PAGE CODE (APP ONLY USES TRACKLIST STATEFUL WIDGET NOW)
 
 // class SecondPage extends StatefulWidget {
 //   const SecondPage({key, required this.title}) : super(key: key);
