@@ -40,6 +40,8 @@ class _TrackListState extends State<TrackList> {
               width: 200,
               child: Column(
                 children: [
+                  // call FormFieldTemplate for each
+                  // will allow for easier universal use for future code iterations
                   FormFieldTemplate(
                       controller: eventController,
                       decoration: 'Event',
@@ -128,6 +130,7 @@ class _TrackListState extends State<TrackList> {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -185,6 +188,7 @@ class _TrackListState extends State<TrackList> {
   }
 }
 
+// standard template for FormFields when adding events
 class FormFieldTemplate extends StatelessWidget {
   const FormFieldTemplate(
       {super.key,
@@ -192,6 +196,7 @@ class FormFieldTemplate extends StatelessWidget {
       required this.decoration,
       required this.formkey});
 
+  // key for field, controller, and string decoration
   final String formkey;
   final TextEditingController controller;
   final String decoration;
