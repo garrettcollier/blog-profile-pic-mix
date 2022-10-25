@@ -2,7 +2,9 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:to_dont_list/event_items.dart';
-import 'package:to_dont_list/to_do_items.dart';
+
+// unneeded import
+// import 'package:to_dont_list/to_do_items.dart';
 
 List<Event> sprints = [
   Event(event: "400M", mark: "49.03", year: "2022", meet: "UCA")
@@ -33,7 +35,7 @@ class _TrackListState extends State<TrackList> {
         return AlertDialog(
           title: Text('Add Event'),
           content: SingleChildScrollView(
-            child: Container(
+            child: SizedBox(
               height: 200,
               width: 200,
               child: Column(
@@ -86,8 +88,8 @@ class _TrackListState extends State<TrackList> {
 
   void _handleTrackItem(event, mark, year, meet) {
     setState(() {
-      Event _event = Event(event: event, mark: mark, year: year, meet: meet);
-      sprints.insert(0, _event);
+      Event newEvent = Event(event: event, mark: mark, year: year, meet: meet);
+      sprints.insert(0, newEvent);
       eventController.clear();
       markController.clear();
       yearController.clear();
@@ -301,6 +303,29 @@ class _TrackListState extends State<TrackList> {
 //             }));
 //   }
 // }
+
+// widget for listing the events as a List Tile within navigator
+class ListEvents extends StatelessWidget {
+  const ListEvents({Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return TrackList(title: title);
+            },
+          ),
+        );
+      },
+    );
+  }
+}
 
 void main() {
   runApp(const MaterialApp(
