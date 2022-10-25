@@ -185,6 +185,61 @@ class _TrackListState extends State<TrackList> {
   }
 }
 
+class FormFieldTemplate extends StatelessWidget {
+  const FormFieldTemplate(
+      {super.key,
+      required this.controller,
+      required this.decoration,
+      required this.formkey});
+
+  final String formkey;
+  final TextEditingController controller;
+  final String decoration;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      key: Key(formkey),
+      controller: controller,
+      decoration: InputDecoration(hintText: decoration),
+    );
+  }
+}
+
+// widget for listing the events as a List Tile within navigator
+class ListEvents extends StatelessWidget {
+  const ListEvents({Key? key, required this.title}) : super(key: key);
+
+  // passes title to determine type of list to display
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return TrackList(title: title);
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+void main() {
+  runApp(const MaterialApp(
+    title: 'Sprint PRs',
+    home: TrackList(
+      title: 'Sprint PR',
+    ),
+  ));
+}
+
 // UNNEEDED SECOND PAGE CODE (APP ONLY USES TRACKLIST STATEFUL WIDGET NOW)
 
 // class SecondPage extends StatefulWidget {
@@ -331,58 +386,3 @@ class _TrackListState extends State<TrackList> {
 //             }));
 //   }
 // }
-
-class FormFieldTemplate extends StatelessWidget {
-  const FormFieldTemplate(
-      {super.key,
-      required this.controller,
-      required this.decoration,
-      required this.formkey});
-
-  final String formkey;
-  final TextEditingController controller;
-  final String decoration;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      key: Key(formkey),
-      controller: controller,
-      decoration: InputDecoration(hintText: decoration),
-    );
-  }
-}
-
-// widget for listing the events as a List Tile within navigator
-class ListEvents extends StatelessWidget {
-  const ListEvents({Key? key, required this.title}) : super(key: key);
-
-  // passes title to determine type of list to display
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return TrackList(title: title);
-            },
-          ),
-        );
-      },
-    );
-  }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    title: 'Sprint PRs',
-    home: TrackList(
-      title: 'Sprint PR',
-    ),
-  ));
-}
