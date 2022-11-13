@@ -18,12 +18,12 @@ If you ever desired a free app that could store blog posts and upload photos or 
 
 <img src="BlogHome.png" width="300" height="400">
 
-<img src="Nav.png">
+<img src="Nav.png" width="300" height="400">
 
-<img src="ImageHomePage.png">
+<img src="ImageHomePage.png" width="300" height="400">
 
-<img src="SelectCamera.png">
+<img src="SelectCamera.png" width="300" height="400">
 
-<img src="SelectGallery.png">
+<img src="SelectGallery.png" width="300" height="400">
 
-<img src="Comments.png">
+<img src="Comments.png" width="300" height="400">
