@@ -16,7 +16,7 @@ If you ever desired a free app that could store blog posts and upload photos or 
 
 ## Multiple Screenshots of your app
 
-<img src="BlogHome.png" width="250" height="250">
+<img src="BlogHome.png" width="300" height="400">
 
 <img src="Nav.png">
 
